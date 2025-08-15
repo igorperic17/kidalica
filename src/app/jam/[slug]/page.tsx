@@ -82,14 +82,15 @@ export default function JamSongPage({
       }
     } else {
       // Improved chord detection - check if line contains chord patterns
-      const chordPattern = /[A-G][#b]?(m|maj|min|dim|aug|sus|add)?[0-9]?(\/[A-G][#b]?)?/g;
+      // Include H for German notation (H = B in English notation)
+      const chordPattern = /[A-GH][#b]?(m|maj|min|dim|aug|sus|add)?[0-9]?(\/[A-GH][#b]?)?/g;
       const chords = trimmed.match(chordPattern);
       
       // If line contains chords (either standalone or mixed with text)
       if (chords && chords.length > 0) {
         // If it's mostly chords or has chord progression pattern
         const chordRatio = chords.join('').length / trimmed.length;
-        const hasChordProgression = /^[A-G][#b]?(m|maj|min|dim|aug|sus|add)?[0-9]?(\/[A-G][#b]?)?\s+[A-G][#b]?(m|maj|min|dim|aug|sus|add)?[0-9]?(\/[A-G][#b]?)?/.test(trimmed);
+        const hasChordProgression = /^[A-GH][#b]?(m|maj|min|dim|aug|sus|add)?[0-9]?(\/[A-GH][#b]?)?\s+[A-GH][#b]?(m|maj|min|dim|aug|sus|add)?[0-9]?(\/[A-GH][#b]?)?/.test(trimmed);
         
         if (chordRatio > 0.3 || hasChordProgression) {
           if (currentSection.type !== "chords") {
@@ -122,7 +123,8 @@ export default function JamSongPage({
     // 1. At the start of line followed by space or end of line
     // 2. Preceded by space and followed by space or end of line
     // 3. Preceded by space and at end of line
-    const chordPattern = /(?:^|\s)([A-G][#b]?(?:m|maj|min|dim|aug|sus|add)?[0-9]?(?:\/[A-G][#b]?)?)(?:\s|$)/g;
+    // Include H for German notation (H = B in English notation)
+    const chordPattern = /(?:^|\s)([A-GH][#b]?(?:m|maj|min|dim|aug|sus|add)?[0-9]?(?:\/[A-GH][#b]?)?)(?:\s|$)/g;
     
     let lastIndex = 0;
     const parts: (string | { chord: string; index: number })[] = [];
@@ -175,37 +177,33 @@ export default function JamSongPage({
                 {/* Navigation Bar */}
                 <div className="flex flex-col gap-4 mb-6">
                   <Link 
-                    href="/library" 
+                    href="/jam" 
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background/80 hover:bg-background transition-all duration-200 text-sm font-medium border border-border/50 hover:border-border"
                   >
                     <ArrowLeft className="h-4 w-4" />
-                    Library
+                    Back to Jam
                   </Link>
                   <div className="flex gap-2">
-                    {prevSong && (
-                      <Link href={`/jam/${prevSong.slug}?${createQueueParams()}`}>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="bg-background/80 hover:bg-background border-border/50 hover:border-border transition-all duration-200 flex-1"
-                        >
-                          <ArrowLeft className="mr-2 h-4 w-4" />
-                          Prev
-                        </Button>
-                      </Link>
-                    )}
-                    {nextSong && (
-                      <Link href={`/jam/${nextSong.slug}?${createQueueParams()}`}>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="bg-background/80 hover:bg-background border-border/50 hover:border-border transition-all duration-200 flex-1"
-                        >
-                          <SkipForward className="mr-2 h-4 w-4" />
-                          Next
-                        </Button>
-                      </Link>
-                    )}
+                    <Link href={`/jam/${prevSong ? prevSong.slug : filteredSongs[filteredSongs.length - 1].slug}?${createQueueParams()}`}>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="bg-background/80 hover:bg-background border-border/50 hover:border-border transition-all duration-200 flex-1"
+                      >
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Prev
+                      </Button>
+                    </Link>
+                    <Link href={`/jam/${nextSong ? nextSong.slug : filteredSongs[0].slug}?${createQueueParams()}`}>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="bg-background/80 hover:bg-background border-border/50 hover:border-border transition-all duration-200 flex-1"
+                      >
+                        <SkipForward className="mr-2 h-4 w-4" />
+                        Next
+                      </Button>
+                    </Link>
                   </div>
                 </div>
                 

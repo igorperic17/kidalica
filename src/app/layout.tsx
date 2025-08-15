@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { GuitarTuner } from "@/components/guitar-tuner";
@@ -11,46 +10,41 @@ import Link from "next/link";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Kidalica - Guitar Song Organizer",
-  description: "A modern web app for organizing and playing guitar songs",
+  title: "kidalica.app - Guitar Song Organizer",
+  description: "Organize and jam your guitar songs with a modern, beautiful interface",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn("min-h-screen bg-background antialiased", inter.className)}>
+      <body className={inter.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container flex h-14 items-center justify-between">
-              <Link href="/" className="flex items-center gap-2 font-semibold hover:opacity-80 transition-opacity">
-                <Logo size="small" />
-                <span>kidalica.app</span>
-              </Link>
-              <nav className="flex items-center gap-4">
-                <Link href="/library" className="text-sm hover:underline transition-all duration-200 hover:text-primary">
-                  Library
+          <div className="min-h-screen bg-background">
+            <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-white/95 dark:bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-900/60">
+              <div className="container-modern flex h-16 items-center justify-between">
+                <Link href="/" className="flex items-center gap-3 font-semibold hover:opacity-80 transition-opacity">
+                  <Logo size="small" />
+                  <span className="text-lg">kidalica.app</span>
                 </Link>
-                <Link href="/jam" className="text-sm hover:underline transition-all duration-200 hover:text-primary">
-                  Jam
-                </Link>
-                <Link href="/about" className="text-sm hover:underline transition-all duration-200 hover:text-primary">
-                  About
-                </Link>
-                <GuitarTuner />
-                <ThemeToggle />
-              </nav>
-            </div>
-          </header>
-          {children}
+                <nav className="flex items-center gap-6">
+                  <Link href="/jam" className="body-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">Jam</Link>
+                  <Link href="/about" className="body-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">About</Link>
+                  <GuitarTuner />
+                  <ThemeToggle />
+                </nav>
+              </div>
+            </header>
+            <main>{children}</main>
+          </div>
         </ThemeProvider>
       </body>
     </html>

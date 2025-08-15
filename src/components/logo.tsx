@@ -3,140 +3,106 @@ import { motion } from "framer-motion";
 
 export function Logo({ className = "", size = "default" }: { className?: string; size?: "small" | "default" | "large" }) {
   const sizeClasses = {
-    small: "h-6 w-6",
-    default: "h-8 w-8", 
-    large: "h-12 w-12"
+    small: "w-6 h-6",
+    default: "w-10 h-10",
+    large: "w-24 h-24",
   };
 
   return (
     <motion.div 
       className={`relative ${sizeClasses[size]} ${className}`}
-      whileHover={{ scale: 1.05 }}
+      whileHover={{ 
+        scale: 1.05,
+        transition: { duration: 0.2, ease: "easeOut" }
+      }}
       whileTap={{ scale: 0.95 }}
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      {/* Guitar Body */}
       <motion.svg
-        viewBox="0 0 24 24"
+        width="100%"
+        height="100%"
+        viewBox="0 0 100 100"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className="w-full h-full"
-        initial={{ rotate: -5 }}
-        animate={{ rotate: 5 }}
+        initial={{ rotate: -2 }}
+        animate={{ rotate: 2 }}
         transition={{ 
-          duration: 2, 
+          duration: 4, 
           repeat: Infinity, 
           repeatType: "reverse",
           ease: "easeInOut"
         }}
       >
-        {/* Guitar Body */}
-        <motion.path
-          d="M12 2C8.5 2 6 4.5 6 8v8c0 3.5 2.5 6 6 6s6-2.5 6-6V8c0-3.5-2.5-6-6-6z"
-          fill="url(#gradient1)"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 1.5, ease: "easeInOut" }}
-        />
-        
-        {/* Guitar Neck */}
-        <motion.path
-          d="M10 8h4v8h-4z"
-          fill="url(#gradient2)"
-          stroke="currentColor"
-          strokeWidth="1"
-          initial={{ scaleY: 0 }}
-          animate={{ scaleY: 1 }}
-          transition={{ duration: 1, delay: 0.5 }}
-        />
-        
-        {/* Strings */}
-        <motion.line
-          x1="10.5" y1="9" x2="10.5" y2="15"
-          stroke="currentColor"
-          strokeWidth="0.5"
-          initial={{ scaleY: 0 }}
-          animate={{ scaleY: 1 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-        />
-        <motion.line
-          x1="11.5" y1="9" x2="11.5" y2="15"
-          stroke="currentColor"
-          strokeWidth="0.5"
-          initial={{ scaleY: 0 }}
-          animate={{ scaleY: 1 }}
-          transition={{ duration: 0.8, delay: 0.9 }}
-        />
-        <motion.line
-          x1="12.5" y1="9" x2="12.5" y2="15"
-          stroke="currentColor"
-          strokeWidth="0.5"
-          initial={{ scaleY: 0 }}
-          animate={{ scaleY: 1 }}
-          transition={{ duration: 0.8, delay: 1.0 }}
-        />
-        <motion.line
-          x1="13.5" y1="9" x2="13.5" y2="15"
-          stroke="currentColor"
-          strokeWidth="0.5"
-          initial={{ scaleY: 0 }}
-          animate={{ scaleY: 1 }}
-          transition={{ duration: 0.8, delay: 1.1 }}
-        />
-        
-        {/* Sound Hole */}
-        <motion.circle
-          cx="12" cy="12" r="2"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.5, delay: 1.2 }}
-        />
-        
-        {/* Music Notes */}
-        <motion.path
-          d="M4 6l2 2 2-2M8 6l2 2 2-2"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          fill="none"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.5 }}
-        />
-        
-        <motion.path
-          d="M16 6l2 2 2-2M20 6l2 2 2-2"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          fill="none"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.7 }}
-        />
-        
-        {/* Gradients */}
         <defs>
-          <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient id="pickGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="hsl(var(--primary))" />
-            <stop offset="100%" stopColor="hsl(var(--primary) / 0.7)" />
+            <stop offset="50%" stopColor="hsl(var(--primary) / 0.8)" />
+            <stop offset="100%" stopColor="hsl(var(--primary) / 0.6)" />
           </linearGradient>
-          <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient id="pickGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="hsl(var(--muted-foreground))" />
-            <stop offset="100%" stopColor="hsl(var(--muted-foreground) / 0.5)" />
+            <stop offset="50%" stopColor="hsl(var(--muted-foreground) / 0.7)" />
+            <stop offset="100%" stopColor="hsl(var(--muted-foreground) / 0.4)" />
           </linearGradient>
         </defs>
+
+        {/* Guitar Pick Body */}
+        <path
+          d="M50 15 C60 15, 70 20, 75 30 C80 40, 80 50, 75 60 C70 70, 60 75, 50 75 C40 75, 30 70, 25 60 C20 50, 20 40, 25 30 C30 20, 40 15, 50 15 Z"
+          fill="url(#pickGradient1)"
+          stroke="hsl(var(--primary) / 0.3)"
+          strokeWidth="2"
+        />
+
+        {/* Pick Hole */}
+        <circle
+          cx="50"
+          cy="45"
+          r="8"
+          fill="hsl(var(--background))"
+          stroke="hsl(var(--primary) / 0.4)"
+          strokeWidth="1"
+        />
+
+        {/* Pick Tip Highlight */}
+        <path
+          d="M50 15 C55 15, 60 18, 65 25 C70 32, 70 40, 65 45 C60 50, 55 52, 50 52"
+          fill="none"
+          stroke="hsl(var(--primary-foreground) / 0.3)"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+
+        {/* Pick Edge Details */}
+        <path
+          d="M50 15 C40 15, 30 20, 25 30 C20 40, 20 50, 25 60 C30 70, 40 75, 50 75"
+          fill="none"
+          stroke="hsl(var(--primary) / 0.5)"
+          strokeWidth="1"
+          strokeLinecap="round"
+        />
+
+        {/* Musical Note */}
+        <g transform="translate(50, 45)">
+          <circle
+            cx="0"
+            cy="-8"
+            r="3"
+            fill="hsl(var(--primary-foreground))"
+          />
+          <path
+            d="M3 -8 L3 -20 L8 -20 L8 -18 L5 -18 L5 -8"
+            fill="hsl(var(--primary-foreground))"
+          />
+          <path
+            d="M-2 -8 L-2 -12 L2 -12 L2 -8"
+            fill="hsl(var(--primary-foreground))"
+          />
+        </g>
       </motion.svg>
-      
-      {/* Glow Effect */}
-      <motion.div
-        className="absolute inset-0 bg-primary/20 rounded-full blur-xl"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1, delay: 0.5 }}
-      />
     </motion.div>
   );
 }
