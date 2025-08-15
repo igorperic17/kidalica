@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getAllSongSlugs, getSongBySlug, getAllSongs } from "@/lib/songs.server";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Music, Tag, SkipForward, Clock, User } from "lucide-react";
+import { ArrowLeft, Music, Tag, SkipForward, Clock, User, List } from "lucide-react";
 
 export function generateStaticParams() {
   return getAllSongSlugs().map((slug) => ({ slug }));
@@ -15,7 +15,7 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
   const song = getSongBySlug(params.slug);
   if (!song) return notFound();
 
-  // Get all songs to find next song
+  // Get all songs to find next song and for the song list
   const allSongs = getAllSongs();
   const currentIndex = allSongs.findIndex(s => s.slug === params.slug);
   const nextSong = currentIndex >= 0 && currentIndex < allSongs.length - 1 ? allSongs[currentIndex + 1] : null;
@@ -148,7 +148,7 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
                 </div>
                 
                 {/* Song Info */}
-                <div className="flex-1 space-y-4">
+                <div className="space-y-4 mb-6">
                   <div>
                     <h1 className="text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent mb-2">
                       {song.title}
@@ -192,6 +192,66 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
                         </Badge>
                       ))}
                     </div>
+                  </div>
+                </div>
+
+                {/* Song List */}
+                <div className="flex-1 overflow-hidden">
+                  <div className="flex items-center gap-2 mb-3">
+                    <List className="h-4 w-4 text-muted-foreground" />
+                    <h3 className="text-sm font-medium text-muted-foreground">All Songs</h3>
+                  </div>
+                  <div className="space-y-1 overflow-y-auto h-full pr-2">
+                    {allSongs.map((songItem, index) => {
+                      const isCurrent = songItem.slug === params.slug;
+                      return (
+                        <Link
+                          key={songItem.slug}
+                          href={`/jam/${songItem.slug}`}
+                          className={`block p-3 rounded-lg transition-all duration-200 ${
+                            isCurrent
+                              ? 'bg-primary/20 border border-primary/30 text-primary'
+                              : 'bg-background/50 hover:bg-background/80 border border-border/30 hover:border-border/50 text-foreground'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className={`text-xs font-medium px-2 py-0.5 rounded ${
+                                  isCurrent 
+                                    ? 'bg-primary text-primary-foreground' 
+                                    : 'bg-muted text-muted-foreground'
+                                }`}>
+                                  #{index + 1}
+                                </span>
+                                <h4 className={`text-sm font-medium truncate ${
+                                  isCurrent ? 'text-primary' : 'text-foreground'
+                                }`}>
+                                  {songItem.title}
+                                </h4>
+                              </div>
+                              {songItem.artist && (
+                                <p className="text-xs text-muted-foreground truncate">
+                                  {songItem.artist}
+                                </p>
+                              )}
+                            </div>
+                            {songItem.difficulty && (
+                              <Badge 
+                                variant="outline" 
+                                className={`text-xs px-2 py-0.5 ml-2 ${
+                                  isCurrent 
+                                    ? 'border-primary/30 text-primary' 
+                                    : 'border-border/50 text-muted-foreground'
+                                }`}
+                              >
+                                {songItem.difficulty}
+                              </Badge>
+                            )}
+                          </div>
+                        </Link>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
