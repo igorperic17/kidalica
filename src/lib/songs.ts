@@ -1,33 +1,40 @@
-export type Song = {
-  slug: string;
-  title: string;
-  artist?: string;
-  difficulty?: "easy" | "medium" | "hard";
-  tags?: string[];
-  playlist?: string[];
-  content: string;
-};
+import type { Song } from "./songs.server";
 
-export function filterSongs(list: Song[], {
-  query,
-  difficulty,
-  tags,
-  playlist,
-}: {
+export interface FilterOptions {
   query?: string;
-  difficulty?: Song["difficulty"] | "any";
+  difficulty?: "any" | Song["difficulty"];
   tags?: string[];
-  playlist?: string;
-}): Song[] {
-  const needle = query?.toLowerCase().trim() ?? "";
-  return list.filter((song) => {
-    const matchesQuery = needle
-      ? song.title.toLowerCase().includes(needle) || song.artist?.toLowerCase().includes(needle)
-      : true;
-    const matchesDifficulty = difficulty && difficulty !== "any" ? song.difficulty === difficulty : true;
-    const matchesTags = tags && tags.length ? tags.every((t) => song.tags?.includes(t)) : true;
-    const matchesPlaylist = playlist ? song.playlist?.includes(playlist) : true;
-    return matchesQuery && matchesDifficulty && matchesTags && matchesPlaylist;
+}
+
+export function filterSongs(songs: Song[], filters: FilterOptions): Song[] {
+  return songs.filter((song) => {
+    // Query filter
+    if (filters.query) {
+      const query = filters.query.toLowerCase();
+      const matchesTitle = song.title.toLowerCase().includes(query);
+      const matchesArtist = song.artist?.toLowerCase().includes(query) || false;
+      if (!matchesTitle && !matchesArtist) {
+        return false;
+      }
+    }
+
+    // Difficulty filter
+    if (filters.difficulty && filters.difficulty !== "any") {
+      if (song.difficulty !== filters.difficulty) {
+        return false;
+      }
+    }
+
+    // Tags filter
+    if (filters.tags && filters.tags.length > 0) {
+      const songTags = song.tags || [];
+      const hasMatchingTag = filters.tags.some(tag => songTags.includes(tag));
+      if (!hasMatchingTag) {
+        return false;
+      }
+    }
+
+    return true;
   });
 }
 

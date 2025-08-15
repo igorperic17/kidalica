@@ -1,7 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
-import type { Song } from "./songs";
+
+export type Song = {
+  slug: string;
+  title: string;
+  artist?: string;
+  difficulty?: "easy" | "medium" | "hard";
+  tags?: string[];
+  content: string;
+};
 
 const songsDirectory = path.join(process.cwd(), "content", "songs");
 
@@ -27,7 +35,6 @@ export function getSongBySlug(slug: string): Song | null {
     artist: front.artist,
     difficulty: front.difficulty as Song["difficulty"],
     tags: (front.tags as string[]) ?? [],
-    playlist: (front.playlist as string[]) ?? [],
     content,
   };
 }

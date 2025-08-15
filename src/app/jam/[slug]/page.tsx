@@ -11,14 +11,62 @@ export function generateStaticParams() {
 
 type SectionType = "chords" | "lyrics" | "info";
 
-export default function JamSongPage({ params }: { params: { slug: string } }) {
+export default function JamSongPage({ 
+  params, 
+  searchParams 
+}: { 
+  params: { slug: string };
+  searchParams: { queue?: string; difficulty?: string; query?: string };
+}) {
   const song = getSongBySlug(params.slug);
   if (!song) return notFound();
 
-  // Get all songs to find next song and for the song list
+  // Get all songs and filter based on URL parameters
   const allSongs = getAllSongs();
-  const currentIndex = allSongs.findIndex(s => s.slug === params.slug);
-  const nextSong = currentIndex >= 0 && currentIndex < allSongs.length - 1 ? allSongs[currentIndex + 1] : null;
+  
+  // Parse the queue from URL parameters
+  let filteredSongs = allSongs;
+  if (searchParams.queue) {
+    try {
+      const queueSlugs = JSON.parse(decodeURIComponent(searchParams.queue));
+      filteredSongs = allSongs.filter(s => queueSlugs.includes(s.slug));
+    } catch (e) {
+      // If parsing fails, fall back to all songs
+      filteredSongs = allSongs;
+    }
+  } else if (searchParams.difficulty || searchParams.query) {
+    // Apply filters if no queue but filters are present
+    filteredSongs = allSongs.filter(s => {
+      const matchesDifficulty = !searchParams.difficulty || 
+        searchParams.difficulty === 'any' || 
+        s.difficulty === searchParams.difficulty;
+      
+      const matchesQuery = !searchParams.query || 
+        s.title.toLowerCase().includes(searchParams.query.toLowerCase()) ||
+        (s.artist && s.artist.toLowerCase().includes(searchParams.query.toLowerCase()));
+      
+      return matchesDifficulty && matchesQuery;
+    });
+  }
+
+  // Find current song in the filtered queue
+  const currentIndex = filteredSongs.findIndex(s => s.slug === params.slug);
+  const nextSong = currentIndex >= 0 && currentIndex < filteredSongs.length - 1 ? filteredSongs[currentIndex + 1] : null;
+  const prevSong = currentIndex > 0 ? filteredSongs[currentIndex - 1] : null;
+
+  // Create URL parameters for navigation
+  const createQueueParams = () => {
+    const params = new URLSearchParams();
+    if (searchParams.queue) {
+      params.set('queue', searchParams.queue);
+    } else if (searchParams.difficulty) {
+      params.set('difficulty', searchParams.difficulty);
+    }
+    if (searchParams.query) {
+      params.set('query', searchParams.query);
+    }
+    return params.toString();
+  };
 
   // Parse content into sections with improved chord detection
   const lines = song.content.split("\n");
@@ -133,18 +181,32 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
                     <ArrowLeft className="h-4 w-4" />
                     Library
                   </Link>
-                  {nextSong && (
-                    <Link href={`/jam/${nextSong.slug}`}>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="bg-background/80 hover:bg-background border-border/50 hover:border-border transition-all duration-200"
-                      >
-                        <SkipForward className="mr-2 h-4 w-4" />
-                        Next: {nextSong.title}
-                      </Button>
-                    </Link>
-                  )}
+                  <div className="flex gap-2">
+                    {prevSong && (
+                      <Link href={`/jam/${prevSong.slug}?${createQueueParams()}`}>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="bg-background/80 hover:bg-background border-border/50 hover:border-border transition-all duration-200 flex-1"
+                        >
+                          <ArrowLeft className="mr-2 h-4 w-4" />
+                          Prev
+                        </Button>
+                      </Link>
+                    )}
+                    {nextSong && (
+                      <Link href={`/jam/${nextSong.slug}?${createQueueParams()}`}>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="bg-background/80 hover:bg-background border-border/50 hover:border-border transition-all duration-200 flex-1"
+                        >
+                          <SkipForward className="mr-2 h-4 w-4" />
+                          Next
+                        </Button>
+                      </Link>
+                    )}
+                  </div>
                 </div>
                 
                 {/* Song Info */}
@@ -195,19 +257,21 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
                   </div>
                 </div>
 
-                {/* Song List */}
+                {/* Song Queue */}
                 <div className="flex-1 overflow-hidden">
                   <div className="flex items-center gap-2 mb-3">
                     <List className="h-4 w-4 text-muted-foreground" />
-                    <h3 className="text-sm font-medium text-muted-foreground">All Songs</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      Jam Queue ({filteredSongs.length})
+                    </h3>
                   </div>
                   <div className="space-y-1 overflow-y-auto h-full pr-2">
-                    {allSongs.map((songItem, index) => {
+                    {filteredSongs.map((songItem, index) => {
                       const isCurrent = songItem.slug === params.slug;
                       return (
                         <Link
                           key={songItem.slug}
-                          href={`/jam/${songItem.slug}`}
+                          href={`/jam/${songItem.slug}?${createQueueParams()}`}
                           className={`block p-3 rounded-lg transition-all duration-200 ${
                             isCurrent
                               ? 'bg-primary/20 border border-primary/30 text-primary'

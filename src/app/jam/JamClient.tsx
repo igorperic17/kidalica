@@ -1,7 +1,8 @@
 "use client";
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { filterSongs, type Song } from "@/lib/songs";
+import { filterSongs } from "@/lib/songs";
+import type { Song } from "@/lib/songs.server";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Music, List, Tag } from "lucide-react";
@@ -19,6 +20,12 @@ export default function JamClient({ initialSongs }: { initialSongs: Song[] }) {
       case "hard": return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
       default: return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
     }
+  };
+
+  // Create queue parameter for filtered songs
+  const createQueueParams = () => {
+    const queueSlugs = songs.map(s => s.slug);
+    return `queue=${encodeURIComponent(JSON.stringify(queueSlugs))}`;
   };
 
   return (
@@ -87,7 +94,7 @@ export default function JamClient({ initialSongs }: { initialSongs: Song[] }) {
           
           <div className="space-y-3">
             {songs.map((song, index) => (
-              <Link key={song.slug} href={`/jam/${song.slug}`} className="block">
+              <Link key={song.slug} href={`/jam/${song.slug}?${createQueueParams()}`} className="block">
                 <div className="group rounded-lg border bg-gradient-to-r from-background to-muted/20 p-4 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 cursor-pointer">
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
@@ -109,20 +116,15 @@ export default function JamClient({ initialSongs }: { initialSongs: Song[] }) {
                         {song.artist}
                       </div>
                       <div className="flex gap-1 flex-wrap">
-                        {song.tags?.slice(0, 2).map((t) => (
+                        {song.tags?.slice(0, 3).map((t) => (
                           <span key={t} className="inline-flex items-center px-2 py-1 rounded text-xs bg-muted text-muted-foreground">
                             <Tag className="mr-1 h-2 w-2" />
                             {t}
                           </span>
                         ))}
-                        {song.playlist?.slice(0, 1).map((p) => (
-                          <span key={p} className="inline-flex items-center px-2 py-1 rounded text-xs bg-secondary text-secondary-foreground">
-                            {p}
-                          </span>
-                        ))}
-                        {(song.tags?.length || 0) + (song.playlist?.length || 0) > 3 && (
+                        {song.tags && song.tags.length > 3 && (
                           <span className="inline-flex items-center px-2 py-1 rounded text-xs bg-muted text-muted-foreground">
-                            +{(song.tags?.length || 0) + (song.playlist?.length || 0) - 3}
+                            +{song.tags.length - 3}
                           </span>
                         )}
                       </div>
