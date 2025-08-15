@@ -15,7 +15,7 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
   const song = getSongBySlug(params.slug);
   if (!song) return notFound();
 
-  // Parse content into sections
+  // Parse content into sections with improved chord detection
   const lines = song.content.split("\n");
   const sections: { type: SectionType; content: string[] }[] = [];
   let currentSection: { type: SectionType; content: string[] } = { type: "lyrics", content: [] };
@@ -27,21 +27,32 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
         sections.push({ ...currentSection, content: [...currentSection.content] });
         currentSection.content = [];
       }
-    } else if (trimmed.match(/^[A-G][#b]?(m|maj|min|dim|aug)?[0-9]?(\/[A-G][#b]?)?\s*$/)) {
-      // This looks like a chord line
-      if (currentSection.type !== "chords") {
-        if (currentSection.content.length > 0) {
-          sections.push({ ...currentSection, content: [...currentSection.content] });
-        }
-        currentSection = { type: "chords", content: [] };
-      }
-      currentSection.content.push(line);
     } else {
-      if (currentSection.type !== "lyrics") {
-        if (currentSection.content.length > 0) {
-          sections.push({ ...currentSection, content: [...currentSection.content] });
+      // Improved chord detection - check if line contains chord patterns
+      const chordPattern = /[A-G][#b]?(m|maj|min|dim|aug|sus|add)?[0-9]?(\/[A-G][#b]?)?/g;
+      const chords = trimmed.match(chordPattern);
+      
+      // If line contains chords (either standalone or mixed with text)
+      if (chords && chords.length > 0) {
+        // If it's mostly chords or has chord progression pattern
+        const chordRatio = chords.join('').length / trimmed.length;
+        const hasChordProgression = /^[A-G][#b]?(m|maj|min|dim|aug|sus|add)?[0-9]?(\/[A-G][#b]?)?\s+[A-G][#b]?(m|maj|min|dim|aug|sus|add)?[0-9]?(\/[A-G][#b]?)?/.test(trimmed);
+        
+        if (chordRatio > 0.3 || hasChordProgression) {
+          if (currentSection.type !== "chords") {
+            if (currentSection.content.length > 0) {
+              sections.push({ ...currentSection, content: [...currentSection.content] });
+            }
+            currentSection = { type: "chords", content: [] };
+          }
         }
-        currentSection = { type: "lyrics", content: [] };
+      } else {
+        if (currentSection.type !== "lyrics") {
+          if (currentSection.content.length > 0) {
+            sections.push({ ...currentSection, content: [...currentSection.content] });
+          }
+          currentSection = { type: "lyrics", content: [] };
+        }
       }
       currentSection.content.push(line);
     }
@@ -52,49 +63,49 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
   }
 
   return (
-    <main className="container mx-auto max-w-4xl py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <Link href="/library" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Library
+    <main className="container mx-auto max-w-5xl py-4">
+      {/* Compact Header */}
+      <div className="mb-4">
+        <Link href="/library" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-2">
+          <ArrowLeft className="mr-1 h-3 w-3" />
+          Back
         </Link>
         
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <h1 className="text-3xl font-bold mb-2">{song.title}</h1>
+            <h1 className="text-2xl font-bold mb-1">{song.title}</h1>
             {song.artist && (
-              <p className="text-xl text-muted-foreground mb-4">{song.artist}</p>
+              <p className="text-lg text-muted-foreground mb-2">{song.artist}</p>
             )}
             <div className="flex items-center gap-2 flex-wrap">
               {song.difficulty && (
-                <Badge variant="secondary">
+                <Badge variant="secondary" className="text-xs">
                   {song.difficulty}
                 </Badge>
               )}
               {song.tags?.map((tag) => (
-                <Badge key={tag} variant="outline">
-                  <Tag className="mr-1 h-3 w-3" />
+                <Badge key={tag} variant="outline" className="text-xs">
+                  <Tag className="mr-1 h-2 w-2" />
                   {tag}
                 </Badge>
               ))}
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Music className="h-5 w-5 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">Ready to jam</span>
+            <Music className="h-4 w-4 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">Ready</span>
           </div>
         </div>
       </div>
 
-      {/* Song Content */}
-      <article className="prose prose-neutral max-w-none dark:prose-invert">
+      {/* Compact Song Content */}
+      <article className="prose prose-neutral max-w-none dark:prose-invert prose-sm">
         {sections.map((section, sectionIndex) => (
-          <div key={sectionIndex} className="mb-6">
+          <div key={sectionIndex} className="mb-3">
             {section.type === "chords" && (
-              <div className="bg-muted/50 rounded-lg p-4 mb-4">
-                <div className="text-sm font-medium text-muted-foreground mb-2">Chords</div>
-                <div className="font-mono text-lg leading-relaxed">
+              <div className="bg-foreground text-background rounded px-3 py-2 mb-2">
+                <div className="text-xs font-medium text-background/70 mb-1">Chords</div>
+                <div className="font-mono text-base leading-tight">
                   {section.content.map((line, lineIndex) => (
                     <div key={lineIndex} className="whitespace-pre-wrap">
                       {line}
@@ -104,7 +115,7 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
               </div>
             )}
             {section.type === "lyrics" && (
-              <div className="text-lg leading-relaxed">
+              <div className="text-base leading-relaxed">
                 {section.content.map((line, lineIndex) => (
                   <div key={lineIndex} className="whitespace-pre-wrap">
                     {line}
