@@ -69,23 +69,48 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
 
   // Function to render line with inline chord chips
   const renderLineWithChords = (line: string) => {
-    // Improved regex to capture complete chords including "m"
-    const chordPattern = /[A-G][#b]?(m|maj|min|dim|aug|sus|add)?[0-9]?(\/[A-G][#b]?)?/g;
-    const parts = line.split(chordPattern);
-    const chords = line.match(chordPattern) || [];
+    // More precise regex to match chords with proper spacing
+    // Matches chords that are either:
+    // 1. At the start of line followed by space or end of line
+    // 2. Preceded by space and followed by space or end of line
+    // 3. Preceded by space and at end of line
+    const chordPattern = /(?:^|\s)([A-G][#b]?(?:m|maj|min|dim|aug|sus|add)?[0-9]?(?:\/[A-G][#b]?)?)(?:\s|$)/g;
+    
+    let lastIndex = 0;
+    const parts: (string | { chord: string; index: number })[] = [];
+    let match;
+    
+    while ((match = chordPattern.exec(line)) !== null) {
+      // Add text before the chord
+      if (match.index > lastIndex) {
+        parts.push(line.slice(lastIndex, match.index));
+      }
+      
+      // Add the chord (without the leading space)
+      parts.push({ chord: match[1], index: match.index });
+      lastIndex = match.index + match[0].length;
+    }
+    
+    // Add remaining text
+    if (lastIndex < line.length) {
+      parts.push(line.slice(lastIndex));
+    }
     
     return (
       <div className="flex flex-wrap items-center gap-0.5 leading-relaxed">
-        {parts.map((part, index) => (
-          <span key={index}>
-            {part}
-            {chords[index] && (
-              <span className="inline-block bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-sm font-bold px-2 py-1 rounded-md mx-1 shadow-sm">
-                {chords[index]}
+        {parts.map((part, index) => {
+          if (typeof part === 'string') {
+            return <span key={index}>{part}</span>;
+          } else {
+            return (
+              <span key={index}>
+                <span className="inline-block bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-sm font-bold px-2 py-1 rounded-md mx-1 shadow-sm">
+                  {part.chord}
+                </span>
               </span>
-            )}
-          </span>
-        ))}
+            );
+          }
+        })}
       </div>
     );
   };
@@ -174,9 +199,9 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
           <div className="relative p-8 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm">
             <div className="prose prose-neutral max-w-none dark:prose-invert prose-lg">
               {sections.map((section, sectionIndex) => (
-                <div key={sectionIndex} className="mb-6 last:mb-0">
+                <div key={sectionIndex} className="mb-3 last:mb-0">
                   {section.content.map((line, lineIndex) => (
-                    <div key={lineIndex} className="mb-2 last:mb-0">
+                    <div key={lineIndex} className="mb-1 last:mb-0">
                       {renderLineWithChords(line)}
                     </div>
                   ))}
