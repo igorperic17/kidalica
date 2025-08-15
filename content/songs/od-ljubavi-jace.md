@@ -6,8 +6,7 @@ tags: [balkan, rock, serbian]
 playlist: [practice, emotional]
 ---
 
-Intro: Am, G, Am, G, Am, G, F, G, Am
-       Am, G, Am, G, Am, G, F, G, Am
+Intro: Am G Am G Am G F G Am
 
              Am
 Ne znam ja u paru
@@ -19,13 +18,13 @@ ja osećanja krijem
 da ne bih bio povređen
 
                Am
-A s tobom imam nešto      |
-                  G       |
-to da objasnim ne umem    |
-          F               | x2
-ko orao u ponos           |
-       Dm           Am    |
-u tebe smem da se zakunem |
+A s tobom imam nešto      
+                  G       
+to da objasnim ne umem    
+          F               
+ko orao u ponos           
+       Dm           Am    
+u tebe smem da se zakunem 
 
 Refren 
             Am
@@ -52,7 +51,7 @@ to nije ljubav
 G                Am
 to je od ljubavi jače
 
-Am, F, C, G x4
+Am F C G x4
 Am
 
 Ne znam ja u paru

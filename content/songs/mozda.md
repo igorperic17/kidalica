@@ -6,7 +6,7 @@ tags: [balkan, rock, serbian]
 playlist: [practice, emotional]
 ---
 
-|Em C |G D | x4
+Em C G D  x4
 
 Em       C        G          D
 Trose se drumovi, stig'o sam na kraj puta
@@ -19,7 +19,7 @@ ne prima koren moj, pustinja
 
      Am                   C
 A ja kradem jos Bogu dane trazim 
-            Am       C       D  Hm?
+            Am       C       D  Hm
 lek za rane sebi da, da oprostim
 
 Ref.
@@ -32,7 +32,7 @@ Mozda, mi dani ne bi prolazili u tisini
 Hm     C           Am             D
 mozda, kada bih je nazvao i rek'o joj izvini
 
-|Em C |G D | x2
+Em C G D  x2
 
 Srce je prepuno, strela iz njenog oka
 ja cuvam ih uporno, kao uspomenu
@@ -40,5 +40,5 @@ ja cuvam ih uporno, kao uspomenu
 Neka me secaju na daneiz starog bloka
 kad sam zadnji put, povredio nju
 
-A ja kradem jos dane Boguzelim, 
+A ja kradem jos dane Bogu zelim, 
 al' ne mogu sebi da, da oprostim
