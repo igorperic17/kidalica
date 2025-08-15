@@ -28,6 +28,7 @@ export function GuitarTuner() {
   const [closestString, setClosestString] = useState<GuitarString | null>(null);
   const [tuningDirection, setTuningDirection] = useState<"up" | "down" | "in-tune" | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [volume, setVolume] = useState<number>(0);
   
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -44,7 +45,8 @@ export function GuitarTuner() {
       // Create audio context
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
       analyserRef.current = audioContextRef.current.createAnalyser();
-      analyserRef.current.fftSize = 2048;
+      analyserRef.current.fftSize = 4096; // Increased for better frequency resolution
+      analyserRef.current.smoothingTimeConstant = 0.8;
       
       // Connect microphone to analyser
       microphoneRef.current = audioContextRef.current.createMediaStreamSource(stream);
@@ -63,6 +65,7 @@ export function GuitarTuner() {
     setCurrentFrequency(null);
     setClosestString(null);
     setTuningDirection(null);
+    setVolume(0);
     
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
@@ -84,11 +87,24 @@ export function GuitarTuner() {
     const dataArray = new Float32Array(bufferLength);
     analyserRef.current.getFloatFrequencyData(dataArray);
 
-    // Find the peak frequency
+    // Calculate volume level
+    let sum = 0;
+    for (let i = 0; i < bufferLength; i++) {
+      sum += Math.pow(10, dataArray[i] / 20);
+    }
+    const average = sum / bufferLength;
+    setVolume(average);
+
+    // Find the peak frequency with better detection
     let maxIndex = 0;
     let maxValue = -Infinity;
     
-    for (let i = 0; i < bufferLength; i++) {
+    // Focus on guitar frequency range (80Hz - 400Hz)
+    const sampleRate = audioContextRef.current?.sampleRate || 44100;
+    const minBin = Math.floor(80 * analyserRef.current.fftSize / sampleRate);
+    const maxBin = Math.floor(400 * analyserRef.current.fftSize / sampleRate);
+    
+    for (let i = minBin; i < maxBin && i < bufferLength; i++) {
       if (dataArray[i] > maxValue) {
         maxValue = dataArray[i];
         maxIndex = i;
@@ -96,11 +112,10 @@ export function GuitarTuner() {
     }
 
     // Convert bin index to frequency
-    const sampleRate = audioContextRef.current?.sampleRate || 44100;
     const frequency = (maxIndex * sampleRate) / (analyserRef.current.fftSize * 2);
     
-    // Only update if we have a reasonable frequency (above 80Hz and below 400Hz)
-    if (frequency > 80 && frequency < 400 && maxValue > -50) {
+    // Only update if we have a reasonable frequency and sufficient volume
+    if (frequency > 80 && frequency < 400 && maxValue > -60 && average > 0.01) {
       setCurrentFrequency(frequency);
       
       // Find closest guitar string
@@ -117,9 +132,9 @@ export function GuitarTuner() {
       
       setClosestString(closest);
       
-      // Determine tuning direction
+      // Determine tuning direction with smaller tolerance
       const difference = frequency - closest.frequency;
-      const tolerance = 2; // Hz tolerance
+      const tolerance = 1; // Hz tolerance
       
       if (Math.abs(difference) < tolerance) {
         setTuningDirection("in-tune");
@@ -212,15 +227,29 @@ export function GuitarTuner() {
 
           {isListening && (
             <div className="space-y-4">
+              {/* Volume indicator */}
               <div className="text-center">
-                <div className="text-2xl font-bold">
-                  {currentFrequency ? `${currentFrequency.toFixed(1)} Hz` : "Listening..."}
+                <div className="text-sm text-muted-foreground mb-1">Volume</div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-100" 
+                    style={{ width: `${Math.min(volume * 1000, 100)}%` }}
+                  ></div>
                 </div>
               </div>
 
+              {/* Frequency display */}
+              <div className="text-center">
+                <div className="text-sm text-muted-foreground mb-1">Detected Frequency</div>
+                <div className="text-3xl font-bold font-mono">
+                  {currentFrequency ? `${currentFrequency.toFixed(1)} Hz` : "---"}
+                </div>
+              </div>
+
+              {/* Closest string and tuning direction */}
               {closestString && (
                 <div className="text-center space-y-2">
-                  <div className={`text-3xl font-bold ${closestString.color}`}>
+                  <div className={`text-4xl font-bold ${closestString.color}`}>
                     {closestString.note}
                   </div>
                   <div className="text-sm text-muted-foreground">
@@ -232,24 +261,40 @@ export function GuitarTuner() {
                 </div>
               )}
 
+              {/* All strings with highlighting */}
               <div className="space-y-2">
                 <div className="text-sm font-medium">All Strings:</div>
                 <div className="grid grid-cols-2 gap-2">
-                  {GUITAR_STRINGS.map((string) => (
-                    <div
-                      key={string.name}
-                      className={`p-2 rounded border text-sm ${
-                        closestString?.name === string.name ? "border-primary bg-primary/10" : "border-border"
-                      }`}
-                    >
-                      <div className={`font-medium ${string.color}`}>
-                        {string.note} ({string.frequency} Hz)
+                  {GUITAR_STRINGS.map((string) => {
+                    const isActive = closestString?.name === string.name;
+                    const isInTune = isActive && tuningDirection === "in-tune";
+                    
+                    return (
+                      <div
+                        key={string.name}
+                        className={`p-3 rounded border text-sm transition-all duration-200 ${
+                          isActive 
+                            ? isInTune
+                              ? "border-green-500 bg-green-50 dark:bg-green-950"
+                              : "border-blue-500 bg-blue-50 dark:bg-blue-950"
+                            : "border-border"
+                        }`}
+                      >
+                        <div className={`font-medium ${string.color}`}>
+                          {string.note} ({string.frequency} Hz)
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {string.name}
+                        </div>
+                        {isActive && (
+                          <div className={`text-xs font-medium mt-1 ${getTuningColor()}`}>
+                            {tuningDirection === "in-tune" ? "✓ In tune" : 
+                             tuningDirection === "up" ? "↑ Tune up" : "↓ Tune down"}
+                          </div>
+                        )}
                       </div>
-                      <div className="text-xs text-muted-foreground">
-                        {string.name}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -258,6 +303,7 @@ export function GuitarTuner() {
           <div className="text-xs text-muted-foreground text-center">
             <p>Make sure your guitar is close to the microphone for best results.</p>
             <p>Play each string individually to tune it.</p>
+            <p>Green highlight = in tune, Blue highlight = detected string</p>
           </div>
         </div>
       </DialogContent>

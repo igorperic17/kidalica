@@ -62,6 +62,28 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
     sections.push({ ...currentSection, content: [...currentSection.content] });
   }
 
+  // Function to render line with inline chord chips
+  const renderLineWithChords = (line: string) => {
+    const chordPattern = /[A-G][#b]?(m|maj|min|dim|aug|sus|add)?[0-9]?(\/[A-G][#b]?)?/g;
+    const parts = line.split(chordPattern);
+    const chords = line.match(chordPattern) || [];
+    
+    return (
+      <div className="flex flex-wrap items-center gap-1">
+        {parts.map((part, index) => (
+          <span key={index}>
+            {part}
+            {chords[index] && (
+              <span className="inline-block bg-foreground text-background text-xs font-mono px-1 py-0.5 rounded mx-1">
+                {chords[index]}
+              </span>
+            )}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <main className="container mx-auto max-w-5xl py-4">
       {/* Compact Header */}
@@ -101,28 +123,12 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
       {/* Compact Song Content */}
       <article className="prose prose-neutral max-w-none dark:prose-invert prose-sm">
         {sections.map((section, sectionIndex) => (
-          <div key={sectionIndex} className="mb-3">
-            {section.type === "chords" && (
-              <div className="bg-foreground text-background rounded px-3 py-2 mb-2">
-                <div className="text-xs font-medium text-background/70 mb-1">Chords</div>
-                <div className="font-mono text-base leading-tight">
-                  {section.content.map((line, lineIndex) => (
-                    <div key={lineIndex} className="whitespace-pre-wrap">
-                      {line}
-                    </div>
-                  ))}
-                </div>
+          <div key={sectionIndex} className="mb-2">
+            {section.content.map((line, lineIndex) => (
+              <div key={lineIndex} className="mb-1">
+                {renderLineWithChords(line)}
               </div>
-            )}
-            {section.type === "lyrics" && (
-              <div className="text-base leading-relaxed">
-                {section.content.map((line, lineIndex) => (
-                  <div key={lineIndex} className="whitespace-pre-wrap">
-                    {line}
-                  </div>
-                ))}
-              </div>
-            )}
+            ))}
           </div>
         ))}
       </article>
