@@ -7,14 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Music, List, Tag, Filter, Play, X } from "lucide-react";
+import { Search, Music, List, Tag, Filter, Play, X, Clock } from "lucide-react";
 
 export default function JamClient({ initialSongs }: { initialSongs: Song[] }) {
   const [query, setQuery] = useState("");
-  const [difficulty, setDifficulty] = useState<"any" | Song["difficulty"]>("any");
+  const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const songs = useMemo(() => filterSongs(initialSongs, { query, difficulty, tags: selectedTags }), [initialSongs, query, difficulty, selectedTags]);
+  const songs = useMemo(() => filterSongs(initialSongs, { query, difficulty: selectedDifficulties, tags: selectedTags }), [initialSongs, query, selectedDifficulties, selectedTags]);
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -42,7 +42,7 @@ export default function JamClient({ initialSongs }: { initialSongs: Song[] }) {
 
   const clearFilters = () => {
     setQuery("");
-    setDifficulty("any");
+    setSelectedDifficulties([]);
     setSelectedTags([]);
   };
 
@@ -54,28 +54,30 @@ export default function JamClient({ initialSongs }: { initialSongs: Song[] }) {
     );
   };
 
-  const hasActiveFilters = query || difficulty !== "any" || selectedTags.length > 0;
+  const hasActiveFilters = query || selectedDifficulties.length > 0 || selectedTags.length > 0;
 
   return (
     <div className="page-container">
       <div className="page-content">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="heading-1 mb-2">Quick Jam</h1>
-          <p className="body-large">Find songs and start playing immediately</p>
+        <div className="mb-4 sm:mb-8">
+          <h1 className="text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-slate-100 mb-2" style={{ textShadow: '0 0 20px rgba(59, 130, 246, 0.3)' }}>
+            Quick Jam
+          </h1>
+          <p className="text-base sm:text-lg text-slate-300 leading-relaxed">Find songs and start playing immediately</p>
         </div>
         
         {/* Enhanced Filters */}
-        <Card className="card-modern p-6 mb-8">
-          <CardHeader className="pb-4">
+        <Card className="card-modern p-4 sm:p-6 mb-4 sm:mb-8">
+          <CardHeader className="pb-3 sm:pb-4">
             <div className="flex items-center gap-2">
-              <Filter className="h-5 w-5 text-primary" />
-              <h2 className="heading-3">Filters</h2>
+              <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+              <h2 className="text-lg sm:text-2xl lg:text-3xl font-semibold tracking-tight text-slate-200" style={{ textShadow: '0 0 10px rgba(59, 130, 246, 0.1)' }}>Filters</h2>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Search and Basic Filters */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <CardContent className="space-y-4 sm:space-y-6">
+            {/* Search and Results Count */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                 <Input
@@ -85,29 +87,48 @@ export default function JamClient({ initialSongs }: { initialSongs: Song[] }) {
                   className="input-modern pl-10"
                 />
               </div>
-              <select
-                className="input-modern"
-                value={difficulty}
-                onChange={(e) => setDifficulty(e.target.value as any)}
-              >
-                <option value="any">Any Difficulty</option>
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-              </select>
               <div className="flex items-center gap-2">
                 <List className="h-5 w-5 text-muted-foreground" />
-                <span className="body-medium">
+                <span className="text-sm sm:text-base text-slate-400 leading-relaxed">
                   {songs.length} song{songs.length !== 1 ? 's' : ''} found
                 </span>
               </div>
             </div>
 
+            {/* Difficulty Filter */}
+            <div className="space-y-2 sm:space-y-3">
+              <label className="text-sm font-medium text-foreground">Filter by Difficulty</label>
+              <div className="flex flex-wrap gap-1 sm:gap-2">
+                {["easy", "medium", "hard"].map((diff) => (
+                  <button
+                    key={diff}
+                    onClick={() => {
+                      setSelectedDifficulties(prev => 
+                        prev.includes(diff) 
+                          ? prev.filter(d => d !== diff)
+                          : [...prev, diff]
+                      );
+                    }}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      selectedDifficulties.includes(diff)
+                        ? 'bg-primary/10 border border-primary/20 text-primary'
+                        : 'bg-background/50 hover:bg-background/80 border border-border/30 hover:border-border/50 text-foreground'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-3 w-3" />
+                      {diff.charAt(0).toUpperCase() + diff.slice(1)}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Tags Filter */}
             {allTags.length > 0 && (
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <label className="text-sm font-medium text-foreground">Filter by Tags</label>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1 sm:gap-2">
                   {allTags.map((tag) => (
                     <button
                       key={tag}
@@ -156,14 +177,14 @@ export default function JamClient({ initialSongs }: { initialSongs: Song[] }) {
           </Card>
         ) : (
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h2 className="heading-2 mb-2">Ready to Jam</h2>
-                <p className="body-medium">Pick a song and start playing</p>
+                <h2 className="text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-100 mb-2" style={{ textShadow: '0 0 15px rgba(59, 130, 246, 0.2)' }}>Ready to Jam</h2>
+                <p className="text-sm sm:text-base text-slate-400 leading-relaxed">Pick a song and start playing</p>
               </div>
               {songs.length > 0 && (
                 <Link href={`/jam/${songs[0].slug}?${createQueueParams()}`}>
-                  <Button className="btn-primary">
+                  <Button className="btn-primary w-full sm:w-auto">
                     <Play className="mr-2 h-4 w-4" />
                     Start Jam
                   </Button>
@@ -171,10 +192,10 @@ export default function JamClient({ initialSongs }: { initialSongs: Song[] }) {
               )}
             </div>
             
-            <div className="grid-modern md:grid-cols-2">
+            <div className="grid gap-4 sm:gap-6 lg:gap-8 md:grid-cols-2">
               {songs.map((song, index) => (
                 <Link key={song.slug} href={`/jam/${song.slug}?${createQueueParams()}`} className="block">
-                  <Card className="card-modern p-6 group">
+                  <Card className="card-modern p-4 sm:p-6 group">
                     <CardHeader className="pb-4">
                       <div className="flex items-start justify-between">
                         <div className="flex-1 min-w-0">

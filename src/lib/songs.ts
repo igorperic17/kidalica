@@ -2,7 +2,7 @@ import type { Song } from "./songs.server";
 
 export interface FilterOptions {
   query?: string;
-  difficulty?: "any" | Song["difficulty"];
+  difficulty?: "any" | Song["difficulty"] | string[];
   tags?: string[];
 }
 
@@ -20,8 +20,16 @@ export function filterSongs(songs: Song[], filters: FilterOptions): Song[] {
 
     // Difficulty filter
     if (filters.difficulty && filters.difficulty !== "any") {
-      if (song.difficulty !== filters.difficulty) {
-        return false;
+      if (Array.isArray(filters.difficulty)) {
+        // Multiple difficulties selected
+        if (filters.difficulty.length > 0 && !filters.difficulty.includes(song.difficulty || '')) {
+          return false;
+        }
+      } else {
+        // Single difficulty
+        if (song.difficulty !== filters.difficulty) {
+          return false;
+        }
       }
     }
 

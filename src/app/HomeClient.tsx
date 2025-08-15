@@ -23,33 +23,33 @@ export default function HomeClient({ songs }: { songs: Song[] }) {
     <div className="page-container">
       <div className="page-content">
         {/* Hero Section */}
-        <section className="section-modern">
+        <section className="py-8 sm:py-16 lg:py-24">
           <div className="text-center max-w-4xl mx-auto">
-            <div className="flex justify-center mb-8">
+            <div className="flex justify-center mb-4 sm:mb-8">
               <div className="scale-in">
                 <Logo size="large" className="text-primary" />
               </div>
             </div>
             
-            <h1 className="heading-1 mb-6 slide-up">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-slate-100 mb-4 sm:mb-6 slide-up" style={{ textShadow: '0 0 20px rgba(59, 130, 246, 0.3)' }}>
               kidalica.app
             </h1>
             
-            <p className="body-large mb-10 slide-up">
+            <p className="text-base sm:text-lg text-slate-300 leading-relaxed mb-6 sm:mb-10 slide-up">
               Organize and jam your guitar songs with a modern, beautiful interface designed for musicians.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center slide-up">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center slide-up">
               <Link href="/jam">
-                <Button className="btn-primary text-lg px-8 py-4">
-                  <Music className="mr-3 h-5 w-5" />
+                <Button className="btn-primary text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto">
+                  <Music className="mr-2 sm:mr-3 h-4 w-4 sm:h-5 sm:w-5" />
                   Browse Songs
-                  <ArrowRight className="ml-3 h-5 w-5" />
+                  <ArrowRight className="ml-2 sm:ml-3 h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </Link>
               <Link href="/jam">
-                <Button variant="outline" className="btn-secondary text-lg px-8 py-4">
-                  <Guitar className="mr-3 h-5 w-5" />
+                <Button variant="outline" className="btn-secondary text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto">
+                  <Guitar className="mr-2 sm:mr-3 h-4 w-4 sm:h-5 sm:w-5" />
                   Start Jamming
                 </Button>
               </Link>
@@ -58,39 +58,39 @@ export default function HomeClient({ songs }: { songs: Song[] }) {
         </section>
 
         {/* Features Section */}
-        <section className="section-modern">
-          <div className="text-center mb-16">
-            <h2 className="heading-2 mb-4">Everything you need to organize your music</h2>
-            <p className="body-large">Powerful features designed specifically for guitarists</p>
+        <section className="py-8 sm:py-16 lg:py-24">
+          <div className="text-center mb-8 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-100 mb-2 sm:mb-4" style={{ textShadow: '0 0 15px rgba(59, 130, 246, 0.2)' }}>Everything you need to organize your music</h2>
+            <p className="text-base sm:text-lg text-slate-300 leading-relaxed">Powerful features designed specifically for guitarists</p>
           </div>
           
-          <div className="grid-modern md:grid-cols-3">
-            <Card className="card-modern p-8 text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Music className="h-8 w-8 text-primary" />
+          <div className="grid gap-6 sm:gap-8 lg:gap-8 md:grid-cols-3">
+            <Card className="card-modern p-6 sm:p-8 text-center">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <Music className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
               </div>
-              <CardTitle className="heading-4 mb-4">Song Organization</CardTitle>
-              <CardDescription className="body-medium">
+              <CardTitle className="text-lg sm:text-xl lg:text-2xl font-semibold text-slate-200 mb-2 sm:mb-4">Song Organization</CardTitle>
+              <CardDescription className="text-sm sm:text-base text-slate-400 leading-relaxed">
                 Store and organize your guitar songs in Markdown format with tags, difficulty levels, and smart filtering.
               </CardDescription>
             </Card>
 
-            <Card className="card-modern p-8 text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Guitar className="h-8 w-8 text-primary" />
+            <Card className="card-modern p-6 sm:p-8 text-center">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <Guitar className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
               </div>
-              <CardTitle className="heading-4 mb-4">Built-in Tuner</CardTitle>
-              <CardDescription className="body-medium">
+              <CardTitle className="text-lg sm:text-xl lg:text-2xl font-semibold text-slate-200 mb-2 sm:mb-4">Built-in Tuner</CardTitle>
+              <CardDescription className="text-sm sm:text-base text-slate-400 leading-relaxed">
                 Tune your guitar directly in the browser using your microphone with real-time frequency detection.
               </CardDescription>
             </Card>
 
-            <Card className="card-modern p-8 text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Search className="h-8 w-8 text-primary" />
+            <Card className="card-modern p-6 sm:p-8 text-center">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <Search className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
               </div>
-              <CardTitle className="heading-4 mb-4">Smart Filtering</CardTitle>
-              <CardDescription className="body-medium">
+              <CardTitle className="text-lg sm:text-xl lg:text-2xl font-semibold text-slate-200 mb-2 sm:mb-4">Smart Filtering</CardTitle>
+              <CardDescription className="text-sm sm:text-base text-slate-400 leading-relaxed">
                 Find songs quickly with advanced filtering by difficulty, tags, and search queries.
               </CardDescription>
             </Card>
@@ -99,24 +99,24 @@ export default function HomeClient({ songs }: { songs: Song[] }) {
 
         {/* Recent Songs */}
         {recentSongs.length > 0 && (
-          <section className="section-modern">
-            <div className="flex items-center justify-between mb-12">
+          <section className="py-8 sm:py-16 lg:py-24">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 sm:mb-12">
               <div>
-                <h2 className="heading-2 mb-2">Recent Songs</h2>
-                <p className="body-medium">Start jamming with your latest additions</p>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-100 mb-2" style={{ textShadow: '0 0 15px rgba(59, 130, 246, 0.2)' }}>Recent Songs</h2>
+                <p className="text-sm sm:text-base text-slate-400 leading-relaxed">Start jamming with your latest additions</p>
               </div>
               <Link href="/jam">
-                <Button variant="outline" className="btn-ghost">
+                <Button variant="outline" className="btn-ghost w-full sm:w-auto">
                   View All
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
             </div>
             
-            <div className="grid-modern md:grid-cols-3">
+            <div className="grid gap-4 sm:gap-6 lg:gap-8 md:grid-cols-3">
               {recentSongs.map((song) => (
                 <Link key={song.slug} href={`/jam/${song.slug}`} className="block">
-                  <Card className="card-modern p-6 group">
+                  <Card className="card-modern p-4 sm:p-6 group">
                     <CardHeader className="pb-4">
                       <div className="flex items-start justify-between">
                         <div className="flex-1 min-w-0">
@@ -159,19 +159,19 @@ export default function HomeClient({ songs }: { songs: Song[] }) {
         )}
 
         {/* Stats Section */}
-        <section className="section-modern">
-          <div className="text-center mb-12">
-            <h2 className="heading-2 mb-4">Your Music Library</h2>
-            <p className="body-large">Track your progress and organize your collection</p>
+        <section className="py-8 sm:py-16 lg:py-24">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-100 mb-2 sm:mb-4" style={{ textShadow: '0 0 15px rgba(59, 130, 246, 0.2)' }}>Your Music Library</h2>
+            <p className="text-sm sm:text-base text-slate-400 leading-relaxed">Track your progress and organize your collection</p>
           </div>
           
-          <div className="grid-modern md:grid-cols-3">
-            <Card className="card-elevated p-8 text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Music className="h-8 w-8 text-primary" />
+          <div className="grid gap-6 sm:gap-8 lg:gap-8 md:grid-cols-3">
+            <Card className="card-elevated p-6 sm:p-8 text-center">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <Music className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
               </div>
-              <div className="heading-1 text-primary mb-2">{songs.length}</div>
-              <div className="body-medium">Songs in Library</div>
+              <div className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-primary mb-2" style={{ textShadow: '0 0 20px rgba(59, 130, 246, 0.3)' }}>{songs.length}</div>
+              <div className="text-sm sm:text-base text-slate-400 leading-relaxed">Songs in Library</div>
             </Card>
             
             <Card className="card-elevated p-8 text-center">

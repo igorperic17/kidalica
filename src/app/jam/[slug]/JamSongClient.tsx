@@ -237,7 +237,7 @@ export function JamSongClient({
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background/80 hover:bg-background transition-all duration-200 text-sm font-medium border border-border/50 hover:border-border"
                   >
                     <ArrowLeft className="h-4 w-4" />
-                    Back to Jam
+                    Back
                   </Link>
                 </div>
                 
@@ -260,7 +260,11 @@ export function JamSongClient({
                     {song.difficulty && (
                       <Badge 
                         variant="secondary" 
-                        className="px-3 py-1 text-sm font-medium bg-gradient-to-r from-green-100 to-green-200 text-green-800 dark:from-green-900 dark:to-green-800 dark:text-green-200 border-0"
+                        className={`px-3 py-1 text-sm font-medium border-0 ${
+                          song.difficulty === 'easy' ? 'badge-success' :
+                          song.difficulty === 'medium' ? 'badge-warning' :
+                          'badge-danger'
+                        }`}
                       >
                         <Clock className="mr-1 h-3 w-3" />
                         {song.difficulty}

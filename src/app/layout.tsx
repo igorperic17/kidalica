@@ -36,7 +36,6 @@ export default function RootLayout({
                   <span className="text-lg">kidalica.app</span>
                 </Link>
                 <nav className="flex items-center gap-6">
-                  <Link href="/jam" className="body-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">Jam</Link>
                   <Link href="/about" className="body-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">About</Link>
                   <GuitarTuner />
                   <ThemeToggle />
