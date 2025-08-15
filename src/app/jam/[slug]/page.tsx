@@ -117,100 +117,108 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <main className="container mx-auto max-w-4xl py-6 px-4">
-        {/* Modern Header with Gradient Background */}
-        <div className="relative mb-8">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-2xl"></div>
-          <div className="relative p-6 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm">
-            {/* Navigation Bar */}
-            <div className="flex items-center justify-between mb-6">
-              <Link 
-                href="/library" 
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background/80 hover:bg-background transition-all duration-200 text-sm font-medium border border-border/50 hover:border-border"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Library
-              </Link>
-              {nextSong && (
-                <Link href={`/jam/${nextSong.slug}`}>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="bg-background/80 hover:bg-background border-border/50 hover:border-border transition-all duration-200"
+      <div className="container mx-auto max-w-7xl py-6 px-4">
+        <div className="flex gap-6 h-[calc(100vh-3rem)]">
+          {/* Left Sidebar - Header */}
+          <div className="w-80 flex-shrink-0">
+            <div className="relative h-full">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-2xl"></div>
+              <div className="relative p-6 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm h-full flex flex-col">
+                {/* Navigation Bar */}
+                <div className="flex flex-col gap-4 mb-6">
+                  <Link 
+                    href="/library" 
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background/80 hover:bg-background transition-all duration-200 text-sm font-medium border border-border/50 hover:border-border"
                   >
-                    <SkipForward className="mr-2 h-4 w-4" />
-                    Next: {nextSong.title}
-                  </Button>
-                </Link>
-              )}
-            </div>
-            
-            {/* Song Info */}
-            <div className="space-y-4">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent mb-2">
-                    {song.title}
-                  </h1>
-                  {song.artist && (
-                    <div className="flex items-center gap-2 text-lg text-muted-foreground mb-4">
-                      <User className="h-4 w-4" />
-                      {song.artist}
-                    </div>
+                    <ArrowLeft className="h-4 w-4" />
+                    Library
+                  </Link>
+                  {nextSong && (
+                    <Link href={`/jam/${nextSong.slug}`}>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="bg-background/80 hover:bg-background border-border/50 hover:border-border transition-all duration-200"
+                      >
+                        <SkipForward className="mr-2 h-4 w-4" />
+                        Next: {nextSong.title}
+                      </Button>
+                    </Link>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 border border-primary/20">
-                    <Music className="h-4 w-4 text-primary" />
-                    <span className="text-sm font-medium text-primary">Ready to Jam</span>
+                
+                {/* Song Info */}
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <h1 className="text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent mb-2">
+                      {song.title}
+                    </h1>
+                    {song.artist && (
+                      <div className="flex items-center gap-2 text-base text-muted-foreground mb-4">
+                        <User className="h-4 w-4" />
+                        {song.artist}
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Status */}
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 border border-primary/20">
+                      <Music className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium text-primary">Ready to Jam</span>
+                    </div>
+                  </div>
+                  
+                  {/* Tags and Difficulty */}
+                  <div className="space-y-3">
+                    {song.difficulty && (
+                      <Badge 
+                        variant="secondary" 
+                        className="px-3 py-1 text-sm font-medium bg-gradient-to-r from-green-100 to-green-200 text-green-800 dark:from-green-900 dark:to-green-800 dark:text-green-200 border-0"
+                      >
+                        <Clock className="mr-1 h-3 w-3" />
+                        {song.difficulty}
+                      </Badge>
+                    )}
+                    <div className="flex flex-wrap gap-2">
+                      {song.tags?.map((tag) => (
+                        <Badge 
+                          key={tag} 
+                          variant="outline" 
+                          className="px-3 py-1 text-sm font-medium border-border/50 bg-background/50"
+                        >
+                          <Tag className="mr-1 h-3 w-3" />
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-              
-              {/* Tags and Difficulty */}
-              <div className="flex items-center gap-3 flex-wrap">
-                {song.difficulty && (
-                  <Badge 
-                    variant="secondary" 
-                    className="px-3 py-1 text-sm font-medium bg-gradient-to-r from-green-100 to-green-200 text-green-800 dark:from-green-900 dark:to-green-800 dark:text-green-200 border-0"
-                  >
-                    <Clock className="mr-1 h-3 w-3" />
-                    {song.difficulty}
-                  </Badge>
-                )}
-                {song.tags?.map((tag) => (
-                  <Badge 
-                    key={tag} 
-                    variant="outline" 
-                    className="px-3 py-1 text-sm font-medium border-border/50 bg-background/50"
-                  >
-                    <Tag className="mr-1 h-3 w-3" />
-                    {tag}
-                  </Badge>
-                ))}
+            </div>
+          </div>
+
+          {/* Right Side - Song Content */}
+          <div className="flex-1">
+            <div className="relative h-full">
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/5 to-transparent rounded-2xl"></div>
+              <div className="relative p-8 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm h-full overflow-y-auto">
+                <div className="prose prose-neutral max-w-none dark:prose-invert prose-lg">
+                  {sections.map((section, sectionIndex) => (
+                    <div key={sectionIndex} className="mb-3 last:mb-0">
+                      {section.content.map((line, lineIndex) => (
+                        <div key={lineIndex} className="mb-1 last:mb-0">
+                          {renderLineWithChords(line)}
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Song Content with Modern Styling */}
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/5 to-transparent rounded-2xl"></div>
-          <div className="relative p-8 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm">
-            <div className="prose prose-neutral max-w-none dark:prose-invert prose-lg">
-              {sections.map((section, sectionIndex) => (
-                <div key={sectionIndex} className="mb-3 last:mb-0">
-                  {section.content.map((line, lineIndex) => (
-                    <div key={lineIndex} className="mb-1 last:mb-0">
-                      {renderLineWithChords(line)}
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </main>
+      </div>
     </div>
   );
 }
