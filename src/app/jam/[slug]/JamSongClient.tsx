@@ -197,7 +197,7 @@ export function JamSongClient({
             const [gradient, border] = chordColor.split(' ');
             return (
               <span key={index}>
-                <span className={`inline-block bg-gradient-to-r ${gradient} border ${border} text-foreground text-xs font-semibold px-2 py-0.5 rounded-lg mx-0.5 shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm`}>
+                <span className={`inline-block bg-gradient-to-r ${gradient} border ${border} text-white text-xs font-semibold px-2 py-0.5 rounded-lg mx-0.5 transition-all duration-200 backdrop-blur-sm tech-glow hover:scale-105`}>
                   {part.chord}
                 </span>
               </span>
@@ -336,22 +336,47 @@ export function JamSongClient({
           {/* Right Side - Song Content */}
           <div className="flex-1">
             <div className="relative h-full">
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/5 to-transparent rounded-2xl"></div>
-              <div ref={lyricsContainerRef} className="relative p-8 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm h-full overflow-y-auto">
+              <div className="absolute inset-0 bg-gradient-to-b from-blue-500/8 via-transparent to-purple-500/8 rounded-2xl"
+                   style={{
+                     backgroundImage: `
+                       radial-gradient(ellipse 200px 150px at 20% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 60%),
+                       radial-gradient(ellipse 180px 120px at 80% 80%, rgba(147, 51, 234, 0.12) 0%, transparent 55%),
+                       radial-gradient(ellipse 160px 200px at 50% 50%, rgba(236, 72, 153, 0.08) 0%, transparent 65%),
+                       radial-gradient(ellipse 140px 180px at 10% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                       radial-gradient(ellipse 120px 160px at 90% 30%, rgba(147, 51, 234, 0.08) 0%, transparent 45%),
+                       radial-gradient(ellipse 100px 140px at 70% 10%, rgba(236, 72, 153, 0.06) 0%, transparent 40%)
+                     `
+                   }}></div>
+              <div ref={lyricsContainerRef} className="relative p-8 rounded-2xl border border-blue-500/25 bg-slate-900/80 backdrop-blur-xl h-full overflow-y-auto"
+                   style={{
+                     boxShadow: `
+                       0 0 20px rgba(59, 130, 246, 0.15),
+                       inset 0 1px 0 rgba(255, 255, 255, 0.1)
+                     `
+                   }}>
                 {/* Song Header */}
-                <div className="sticky top-0 z-10 bg-card/80 backdrop-blur-sm border-b border-border/50 pb-4 mb-6 -mx-8 px-8">
+                <div className="sticky top-0 z-10 bg-slate-900/90 backdrop-blur-xl border-b border-blue-500/25 pb-4 mb-6 -mx-8 px-8"
+                     style={{
+                       boxShadow: `
+                         0 0 20px rgba(59, 130, 246, 0.1),
+                         inset 0 1px 0 rgba(255, 255, 255, 0.1)
+                       `
+                     }}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div>
-                        <h1 className="text-xl font-bold text-foreground">
+                        <h1 className="text-xl font-bold text-slate-100"
+                            style={{
+                              textShadow: '0 0 15px rgba(59, 130, 246, 0.3)'
+                            }}>
                           {song.title}
                         </h1>
                         {song.artist && (
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-sm text-slate-300">
                             {song.artist}
                           </p>
                         )}
-                        <p className="text-xs text-muted-foreground/60 mt-1">
+                        <p className="text-xs text-slate-400 mt-1">
                           ← → to navigate • Space to scroll
                         </p>
                       </div>
@@ -361,7 +386,10 @@ export function JamSongClient({
                         variant="outline" 
                         size="sm" 
                         onClick={navigateToPrev}
-                        className="bg-background/80 hover:bg-background border-border/50 hover:border-border transition-all duration-200"
+                        className="bg-slate-900/80 hover:bg-slate-800 border-blue-500/30 hover:border-blue-400/50 transition-all duration-200"
+                        style={{
+                          boxShadow: '0 0 15px rgba(59, 130, 246, 0.1)'
+                        }}
                       >
                         <ArrowLeft className="h-4 w-4" />
                       </Button>
@@ -369,9 +397,14 @@ export function JamSongClient({
                         variant="outline"
                         size="sm"
                         onClick={() => setAutoscroll(!autoscroll)}
-                        className={`bg-background/80 hover:bg-background border-border/50 hover:border-border transition-all duration-200 ${
-                          autoscroll ? 'text-primary border-primary/50' : ''
+                        className={`bg-slate-900/80 hover:bg-slate-800 border-blue-500/30 hover:border-blue-400/50 transition-all duration-200 ${
+                          autoscroll ? 'text-blue-400 border-blue-400/50' : 'text-slate-300'
                         }`}
+                        style={{
+                          boxShadow: autoscroll 
+                            ? '0 0 20px rgba(59, 130, 246, 0.2)' 
+                            : '0 0 15px rgba(59, 130, 246, 0.1)'
+                        }}
                       >
                         {autoscroll ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
                       </Button>
@@ -379,7 +412,10 @@ export function JamSongClient({
                         variant="outline" 
                         size="sm" 
                         onClick={navigateToNext}
-                        className="bg-background/80 hover:bg-background border-border/50 hover:border-border transition-all duration-200"
+                        className="bg-slate-900/80 hover:bg-slate-800 border-blue-500/30 hover:border-blue-400/50 transition-all duration-200"
+                        style={{
+                          boxShadow: '0 0 15px rgba(59, 130, 246, 0.1)'
+                        }}
                       >
                         <SkipForward className="h-4 w-4" />
                       </Button>

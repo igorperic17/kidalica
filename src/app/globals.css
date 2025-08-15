@@ -27,25 +27,25 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
     --primary: 217.2 91.2% 59.8%;
     --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -67,7 +67,14 @@
 @layer components {
   /* Page Layout */
   .page-container {
-    @apply min-h-screen bg-gradient-to-br from-background via-background to-muted/20;
+    @apply min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800;
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 60% 60%, rgba(34, 197, 94, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 90% 90%, rgba(147, 51, 234, 0.1) 0%, transparent 50%);
   }
 
   .page-content {
@@ -88,11 +95,24 @@
   }
 
   .sidebar-inner {
-    @apply absolute inset-0 bg-gradient-to-b from-transparent via-muted/5 to-transparent rounded-2xl;
+    @apply absolute inset-0 bg-gradient-to-b from-blue-500/8 via-transparent to-purple-500/8 rounded-2xl;
+    background-image: 
+      radial-gradient(ellipse 200px 150px at 20% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 180px 120px at 80% 80%, rgba(147, 51, 234, 0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 160px 200px at 50% 50%, rgba(236, 72, 153, 0.08) 0%, transparent 65%),
+      radial-gradient(ellipse 140px 180px at 10% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+      radial-gradient(ellipse 120px 160px at 90% 30%, rgba(147, 51, 234, 0.08) 0%, transparent 45%),
+      radial-gradient(ellipse 100px 140px at 70% 10%, rgba(236, 72, 153, 0.06) 0%, transparent 40%);
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 0 20px rgba(59, 130, 246, 0.15);
   }
 
   .sidebar-card {
-    @apply relative p-6 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm h-full overflow-y-auto;
+    @apply relative p-6 rounded-2xl border border-blue-500/25 bg-slate-900/80 backdrop-blur-xl h-full overflow-y-auto;
+    box-shadow: 
+      0 0 20px rgba(59, 130, 246, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
   .main-content {
@@ -106,33 +126,51 @@
 
   /* Modern Card */
   .card-modern {
-    @apply bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300;
+    @apply bg-slate-900/60 backdrop-blur-xl border border-blue-500/20 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300;
+    box-shadow: 
+      0 0 20px rgba(59, 130, 246, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
   .card-elevated {
-    @apply bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl shadow-lg;
+    @apply bg-slate-900/70 backdrop-blur-2xl border border-blue-400/25 rounded-2xl shadow-2xl hover:shadow-2xl transition-all duration-300;
+    box-shadow: 
+      0 0 30px rgba(59, 130, 246, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
   /* Modern Button */
   .btn-primary {
-    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+    @apply bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl;
+    box-shadow: 
+      0 0 20px rgba(59, 130, 246, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
   .btn-secondary {
-    @apply bg-secondary hover:bg-secondary/80 text-secondary-foreground font-medium px-6 py-3 rounded-lg transition-all duration-200 border border-border/50;
+    @apply bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-6 py-3 rounded-lg transition-all duration-200 border border-blue-500/30;
+    box-shadow: 
+      0 0 15px rgba(59, 130, 246, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
   .btn-ghost {
-    @apply text-muted-foreground hover:text-foreground font-medium px-6 py-3 rounded-lg transition-all duration-200 hover:bg-muted/50;
+    @apply text-slate-400 hover:text-slate-200 font-medium px-6 py-3 rounded-lg transition-all duration-200 hover:bg-slate-800/50;
   }
 
   .btn-outline {
-    @apply bg-background/80 hover:bg-background border-border/50 hover:border-border transition-all duration-200;
+    @apply bg-slate-900/60 hover:bg-slate-800/80 border-blue-500/30 hover:border-blue-400/50 transition-all duration-200;
+    box-shadow: 
+      0 0 15px rgba(59, 130, 246, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
   /* Modern Input */
   .input-modern {
-    @apply w-full px-4 py-3 border border-border/50 rounded-lg bg-background/50 backdrop-blur-sm text-foreground placeholder-muted-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200;
+    @apply w-full px-4 py-3 border border-blue-500/30 rounded-lg bg-slate-900/60 backdrop-blur-xl text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all duration-200;
+    box-shadow: 
+      0 0 15px rgba(59, 130, 246, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
   /* Modern Badge */
@@ -141,23 +179,28 @@
   }
 
   .badge-primary {
-    @apply bg-primary/10 text-primary border border-primary/20;
+    @apply bg-blue-500/20 text-blue-300 border border-blue-500/30;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
   }
 
   .badge-success {
-    @apply bg-gradient-to-r from-green-100 to-green-200 text-green-800 dark:from-green-900 dark:to-green-800 dark:text-green-200 border-0;
+    @apply bg-gradient-to-r from-blue-900 to-blue-800 text-blue-200 border border-blue-500/30;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
   }
 
   .badge-warning {
-    @apply bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 dark:from-yellow-900 dark:to-yellow-800 dark:text-yellow-200 border-0;
+    @apply bg-gradient-to-r from-purple-900 to-purple-800 text-purple-200 border border-purple-500/30;
+    box-shadow: 0 0 10px rgba(147, 51, 234, 0.2);
   }
 
   .badge-danger {
-    @apply bg-gradient-to-r from-red-100 to-red-200 text-red-800 dark:from-red-900 dark:to-red-800 dark:text-red-200 border-0;
+    @apply bg-gradient-to-r from-pink-900 to-pink-800 text-pink-200 border border-pink-500/30;
+    box-shadow: 0 0 10px rgba(236, 72, 153, 0.2);
   }
 
   .badge-outline {
-    @apply border-border/50 bg-background/50 text-muted-foreground;
+    @apply border-blue-500/30 bg-slate-900/60 backdrop-blur-sm text-slate-300;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.1);
   }
 
   /* Modern Section */
@@ -172,31 +215,34 @@
 
   /* Modern Typography */
   .heading-1 {
-    @apply text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-foreground;
+    @apply text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-slate-100;
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
   }
 
   .heading-2 {
-    @apply text-3xl lg:text-4xl font-bold tracking-tight text-foreground;
+    @apply text-3xl lg:text-4xl font-bold tracking-tight text-slate-100;
+    text-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
   }
 
   .heading-3 {
-    @apply text-2xl lg:text-3xl font-semibold tracking-tight text-foreground;
+    @apply text-2xl lg:text-3xl font-semibold tracking-tight text-slate-200;
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.1);
   }
 
   .heading-4 {
-    @apply text-xl lg:text-2xl font-semibold text-foreground;
+    @apply text-xl lg:text-2xl font-semibold text-slate-200;
   }
 
   .body-large {
-    @apply text-lg text-muted-foreground leading-relaxed;
+    @apply text-lg text-slate-300 leading-relaxed;
   }
 
   .body-medium {
-    @apply text-base text-muted-foreground leading-relaxed;
+    @apply text-base text-slate-400 leading-relaxed;
   }
 
   .body-small {
-    @apply text-sm text-muted-foreground leading-relaxed;
+    @apply text-sm text-slate-500 leading-relaxed;
   }
 
   /* Status Indicators */
@@ -295,7 +341,64 @@
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-border;
+    @apply bg-blue-500/50;
+  }
+
+  /* Technological Effects */
+  .tech-glow {
+    box-shadow: 
+      0 0 20px rgba(59, 130, 246, 0.3),
+      0 0 40px rgba(59, 130, 246, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .tech-border {
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    box-shadow: 
+      0 0 10px rgba(59, 130, 246, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .tech-gradient {
+    background: linear-gradient(135deg, 
+      rgba(59, 130, 246, 0.1) 0%, 
+      rgba(147, 51, 234, 0.1) 50%, 
+      rgba(236, 72, 153, 0.1) 100%);
+  }
+
+  /* Animated Elements */
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes pulse-glow {
+    from {
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+    to {
+      box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+    }
+  }
+
+  .scan-line {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scan-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.8), transparent);
+    animation: scan 3s linear infinite;
+  }
+
+  @keyframes scan {
+    0% { left: -100%; }
+    100% { left: 100%; }
   }
 }
 
