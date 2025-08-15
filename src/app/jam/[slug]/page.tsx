@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getAllSongSlugs, getSongBySlug } from "@/lib/songs.server";
+import { getAllSongSlugs, getSongBySlug, getAllSongs } from "@/lib/songs.server";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Music, Tag } from "lucide-react";
+import { ArrowLeft, Music, Tag, SkipForward } from "lucide-react";
 
 export function generateStaticParams() {
   return getAllSongSlugs().map((slug) => ({ slug }));
@@ -14,6 +14,11 @@ type SectionType = "chords" | "lyrics" | "info";
 export default function JamSongPage({ params }: { params: { slug: string } }) {
   const song = getSongBySlug(params.slug);
   if (!song) return notFound();
+
+  // Get all songs to find next song
+  const allSongs = getAllSongs();
+  const currentIndex = allSongs.findIndex(s => s.slug === params.slug);
+  const nextSong = currentIndex >= 0 && currentIndex < allSongs.length - 1 ? allSongs[currentIndex + 1] : null;
 
   // Parse content into sections with improved chord detection
   const lines = song.content.split("\n");
@@ -89,10 +94,20 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
     <main className="container mx-auto max-w-6xl py-2">
       {/* Compact Header */}
       <div className="mb-3">
-        <Link href="/library" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-1">
-          <ArrowLeft className="mr-1 h-3 w-3" />
-          Back
-        </Link>
+        <div className="flex items-center justify-between mb-2">
+          <Link href="/library" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="mr-1 h-3 w-3" />
+            Back to Library
+          </Link>
+          {nextSong && (
+            <Link href={`/jam/${nextSong.slug}`}>
+              <Button variant="outline" size="sm" className="text-xs">
+                <SkipForward className="mr-1 h-3 w-3" />
+                Next: {nextSong.title}
+              </Button>
+            </Link>
+          )}
+        </div>
         
         <div className="flex items-start justify-between">
           <div className="flex-1">

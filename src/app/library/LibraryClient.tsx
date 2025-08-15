@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Chip } from "@/components/ui/chip";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, Music, Clock, Tag } from "lucide-react";
 
 export default function LibraryClient({ initialSongs }: { initialSongs: Song[] }) {
   const [query, setQuery] = useState("");
@@ -53,6 +53,15 @@ export default function LibraryClient({ initialSongs }: { initialSongs: Song[] }
         ? prev.filter(p => p !== playlist)
         : [...prev, playlist]
     );
+  };
+
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty) {
+      case "easy": return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+      case "medium": return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+      case "hard": return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+      default: return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
+    }
   };
 
   return (
@@ -136,34 +145,59 @@ export default function LibraryClient({ initialSongs }: { initialSongs: Song[] }
       {/* Song Grid */}
       <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {songs.map((song) => (
-          <Card key={song.slug} className="group hover:shadow-md transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span className="group-hover:text-primary transition-colors">{song.title}</span>
-                {song.difficulty && <Badge variant="secondary">{song.difficulty}</Badge>}
-              </CardTitle>
-              <CardDescription>{song.artist}</CardDescription>
-            </CardHeader>
-            <CardContent className="flex items-center justify-between">
-              <div className="flex gap-2 flex-wrap">
-                {song.tags?.slice(0, 3).map((t) => (
-                  <Badge key={t} variant="outline" className="text-xs">{t}</Badge>
-                ))}
-                {song.playlist?.slice(0, 2).map((p) => (
-                  <Badge key={p} variant="secondary" className="text-xs">{p}</Badge>
-                ))}
-              </div>
-              <Link href={`/jam/${song.slug}`}>
-                <Button size="sm">Jam</Button>
-              </Link>
-            </CardContent>
-          </Card>
+          <Link key={song.slug} href={`/jam/${song.slug}`} className="block">
+            <Card className="group hover:shadow-lg transition-all duration-200 hover:-translate-y-1 border-0 shadow-sm bg-gradient-to-br from-background to-muted/20 cursor-pointer">
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1 min-w-0">
+                    <CardTitle className="text-lg font-semibold group-hover:text-primary transition-colors truncate">
+                      {song.title}
+                    </CardTitle>
+                    <CardDescription className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
+                      <Music className="h-3 w-3" />
+                      {song.artist}
+                    </CardDescription>
+                  </div>
+                  {song.difficulty && (
+                    <Badge 
+                      variant="secondary" 
+                      className={`text-xs font-medium ${getDifficultyColor(song.difficulty)}`}
+                    >
+                      {song.difficulty}
+                    </Badge>
+                  )}
+                </div>
+              </CardHeader>
+              
+              <CardContent className="pt-0">
+                <div className="flex gap-1 flex-wrap">
+                  {song.tags?.slice(0, 2).map((t) => (
+                    <Badge key={t} variant="outline" className="text-xs">
+                      <Tag className="mr-1 h-2 w-2" />
+                      {t}
+                    </Badge>
+                  ))}
+                  {song.playlist?.slice(0, 1).map((p) => (
+                    <Badge key={p} variant="secondary" className="text-xs">
+                      {p}
+                    </Badge>
+                  ))}
+                  {(song.tags?.length || 0) + (song.playlist?.length || 0) > 3 && (
+                    <Badge variant="outline" className="text-xs">
+                      +{(song.tags?.length || 0) + (song.playlist?.length || 0) - 3}
+                    </Badge>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </section>
 
       {songs.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No songs match your filters.</p>
+          <Music className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+          <p className="text-muted-foreground mb-4">No songs match your filters.</p>
           <Button 
             variant="outline" 
             className="mt-4"
