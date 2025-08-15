@@ -116,6 +116,70 @@ export default function JamSongPage({
     sections.push({ ...currentSection, content: [...currentSection.content] });
   }
 
+  // Chord color mapping for better visual distinction
+  const getChordColor = (chord: string) => {
+    const baseChord = chord.replace(/[#b]/g, '').replace(/[0-9]/g, '').replace(/\/.*$/, '');
+    const isMinor = chord.includes('m') && !chord.includes('maj');
+    const isDiminished = chord.includes('dim');
+    const isAugmented = chord.includes('aug');
+    const isSuspended = chord.includes('sus');
+    const isSeventh = chord.includes('7');
+    const isNinth = chord.includes('9');
+    
+    // Color scheme based on chord type and root note - subtle semi-transparent gradients
+    const chordColors = {
+      // Major chords - subtle warm colors
+      'C': 'from-blue-400/20 to-blue-500/30 border-blue-400/40',
+      'D': 'from-green-400/20 to-green-500/30 border-green-400/40', 
+      'E': 'from-yellow-400/20 to-yellow-500/30 border-yellow-400/40',
+      'F': 'from-purple-400/20 to-purple-500/30 border-purple-400/40',
+      'G': 'from-red-400/20 to-red-500/30 border-red-400/40',
+      'A': 'from-indigo-400/20 to-indigo-500/30 border-indigo-400/40',
+      'B': 'from-pink-400/20 to-pink-500/30 border-pink-400/40',
+      'H': 'from-pink-400/20 to-pink-500/30 border-pink-400/40', // German notation for B
+      
+      // Minor chords - subtle cooler colors
+      'Cm': 'from-blue-500/20 to-blue-600/30 border-blue-500/40',
+      'Dm': 'from-green-500/20 to-green-600/30 border-green-500/40',
+      'Em': 'from-yellow-500/20 to-yellow-600/30 border-yellow-500/40',
+      'Fm': 'from-purple-500/20 to-purple-600/30 border-purple-500/40',
+      'Gm': 'from-red-500/20 to-red-600/30 border-red-500/40',
+      'Am': 'from-indigo-500/20 to-indigo-600/30 border-indigo-500/40',
+      'Bm': 'from-pink-500/20 to-pink-600/30 border-pink-500/40',
+      'Hm': 'from-pink-500/20 to-pink-600/30 border-pink-500/40', // German notation for Bm
+      
+      // Special chord types - subtle variations
+      'dim': 'from-gray-500/20 to-gray-600/30 border-gray-500/40',
+      'aug': 'from-orange-400/20 to-orange-500/30 border-orange-400/40',
+      'sus': 'from-teal-400/20 to-teal-500/30 border-teal-400/40',
+      '7': 'from-amber-400/20 to-amber-500/30 border-amber-400/40',
+      '9': 'from-rose-400/20 to-rose-500/30 border-rose-400/40',
+    };
+    
+    // Determine the color based on chord characteristics
+    if (isDiminished) return chordColors['dim'];
+    if (isAugmented) return chordColors['aug'];
+    if (isSuspended) return chordColors['sus'];
+    if (isNinth) return chordColors['9'];
+    if (isSeventh) return chordColors['7'];
+    
+    // Check for exact match first
+    if (chordColors[chord as keyof typeof chordColors]) {
+      return chordColors[chord as keyof typeof chordColors];
+    }
+    
+    // Check for minor chord
+    if (isMinor) {
+      const minorChord = baseChord + 'm';
+      if (chordColors[minorChord as keyof typeof chordColors]) {
+        return chordColors[minorChord as keyof typeof chordColors];
+      }
+    }
+    
+    // Default to major chord color
+    return chordColors[baseChord as keyof typeof chordColors] || 'from-primary/20 to-primary/30 border-primary/40';
+  };
+
   // Function to render line with inline chord chips
   const renderLineWithChords = (line: string) => {
     // More precise regex to match chords with proper spacing
@@ -147,14 +211,16 @@ export default function JamSongPage({
     }
     
     return (
-      <div className="flex flex-wrap items-center gap-0.5 leading-relaxed">
+      <div className="flex flex-wrap items-center gap-0.5 leading-tight">
         {parts.map((part, index) => {
           if (typeof part === 'string') {
             return <span key={index}>{part}</span>;
           } else {
+            const chordColor = getChordColor(part.chord);
+            const [gradient, border] = chordColor.split(' ');
             return (
               <span key={index}>
-                <span className="inline-block bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-sm font-bold px-2 py-1 rounded-md mx-1 shadow-sm">
+                <span className={`inline-block bg-gradient-to-r ${gradient} border ${border} text-foreground text-xs font-semibold px-2 py-0.5 rounded-lg mx-0.5 shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm`}>
                   {part.chord}
                 </span>
               </span>
@@ -327,9 +393,9 @@ export default function JamSongPage({
               <div className="relative p-8 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm h-full overflow-y-auto">
                 <div className="prose prose-neutral max-w-none dark:prose-invert prose-lg">
                   {sections.map((section, sectionIndex) => (
-                    <div key={sectionIndex} className="mb-3 last:mb-0">
+                    <div key={sectionIndex} className="mb-2 last:mb-0">
                       {section.content.map((line, lineIndex) => (
-                        <div key={lineIndex} className="mb-1 last:mb-0">
+                        <div key={lineIndex} className="mb-0.5 last:mb-0">
                           {renderLineWithChords(line)}
                         </div>
                       ))}
