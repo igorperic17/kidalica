@@ -64,17 +64,18 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
 
   // Function to render line with inline chord chips
   const renderLineWithChords = (line: string) => {
+    // Improved regex to capture complete chords including "m"
     const chordPattern = /[A-G][#b]?(m|maj|min|dim|aug|sus|add)?[0-9]?(\/[A-G][#b]?)?/g;
     const parts = line.split(chordPattern);
     const chords = line.match(chordPattern) || [];
     
     return (
-      <div className="flex flex-wrap items-center gap-1">
+      <div className="flex flex-wrap items-center gap-0.5 leading-tight">
         {parts.map((part, index) => (
           <span key={index}>
             {part}
             {chords[index] && (
-              <span className="inline-block bg-foreground text-background text-xs font-mono px-1 py-0.5 rounded mx-1">
+              <span className="inline-block bg-foreground text-background text-xs font-mono px-1 py-0.5 rounded mx-0.5">
                 {chords[index]}
               </span>
             )}
@@ -85,10 +86,10 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
   };
 
   return (
-    <main className="container mx-auto max-w-5xl py-4">
+    <main className="container mx-auto max-w-6xl py-2">
       {/* Compact Header */}
-      <div className="mb-4">
-        <Link href="/library" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-2">
+      <div className="mb-3">
+        <Link href="/library" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-1">
           <ArrowLeft className="mr-1 h-3 w-3" />
           Back
         </Link>
@@ -123,9 +124,9 @@ export default function JamSongPage({ params }: { params: { slug: string } }) {
       {/* Compact Song Content */}
       <article className="prose prose-neutral max-w-none dark:prose-invert prose-sm">
         {sections.map((section, sectionIndex) => (
-          <div key={sectionIndex} className="mb-2">
+          <div key={sectionIndex} className="mb-1">
             {section.content.map((line, lineIndex) => (
-              <div key={lineIndex} className="mb-1">
+              <div key={lineIndex} className="mb-0.5">
                 {renderLineWithChords(line)}
               </div>
             ))}
